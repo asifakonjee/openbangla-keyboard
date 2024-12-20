@@ -54,6 +54,7 @@ if(OS_LINUX)
     set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
     ## Set Directories for installing and storing files
+    set(CMAKE_INSTALL_PREFIX "/usr")
     if(NOT DEFINED BIN_DIR)
         set(BIN_DIR "${CMAKE_INSTALL_PREFIX}/bin")
     endif()
@@ -73,6 +74,8 @@ if(OS_LINUX)
 
     option(ENABLE_IBUS "Enable IBus support" OFF)
     option(ENABLE_FCITX "Enable Fcitx support" OFF)
+    set(ENABLE_FCITX ON)
+    set(ENABLE_IBUS OFF)
 
     if((NOT ENABLE_IBUS) AND (NOT ENABLE_FCITX))
         message(FATAL_ERROR "Please set atleast ENABLE_IBUS or ENABLE_FCITX to be ON to build a backend")
