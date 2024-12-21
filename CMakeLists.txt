@@ -9,7 +9,7 @@ set(APP_NAME "OpenBangla-Keyboard")
 add_definitions(-DPROJECT_VERSION="${PROJECT_VERSION}")
 
 ## Set Compiler Standard
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 11)
 
 enable_language(Rust)
 include(CMakeCargo)
@@ -53,6 +53,8 @@ if(OS_LINUX)
     # Generate compile_commands.json to satisfy vscode linux configuration
     set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+    ## Set Directories for installing and storing files
+    set(CMAKE_INSTALL_PREFIX "/usr")
     if(NOT DEFINED BIN_DIR)
         set(BIN_DIR "${CMAKE_INSTALL_PREFIX}/bin")
     endif()
@@ -72,6 +74,8 @@ if(OS_LINUX)
 
     option(ENABLE_IBUS "Enable IBus support" OFF)
     option(ENABLE_FCITX "Enable Fcitx support" OFF)
+    set(ENABLE_FCITX ON)
+    set(ENABLE_IBUS OFF)
 
     if((NOT ENABLE_IBUS) AND (NOT ENABLE_FCITX))
         message(FATAL_ERROR "Please set atleast ENABLE_IBUS or ENABLE_FCITX to be ON to build a backend")
@@ -135,16 +139,17 @@ set(CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST_ADDITION "/usr/share/applications" "/us
 if(ENABLE_IBUS)
     ## IBUS
     set(CPACK_PACKAGE_NAME "ibus-openbangla")
+    set(CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME}_${PROJECT_VERSION}-ibus-$ENV{DIST}")
     set(CPACK_DEBIAN_PACKAGE_DEPENDS "ibus (>= 1.5.1)")
     set(CPACK_RPM_PACKAGE_REQUIRES "qt5-qtbase >= 5.9.0, ibus >= 1.5.1, ibus-libs >= 1.5.1, libzstd >= 1.3.3")
     list(APPEND CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST_ADDITION "/usr/share/ibus" "/usr/share/ibus/component")
 else()
     ## FCITX
     set(CPACK_PACKAGE_NAME "fcitx-openbangla")
+    set(CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME}_${PROJECT_VERSION}-fcitx-$ENV{DIST}")
     set(CPACK_DEBIAN_PACKAGE_DEPENDS "fcitx5 (>= 5.0.5)")
     set(CPACK_RPM_PACKAGE_REQUIRES "qt5-qtbase >= 5.9.0, libzstd >= 1.3.3, fcitx5 >= 5.0.5")
     list(APPEND CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST_ADDITION "/usr/lib64/fcitx5" "/usr/share/fcitx5" "/usr/share/fcitx5/inputmethod" "/usr/share/fcitx5/addon")
 endif()
-set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}_${PROJECT_VERSION}-$ENV{DIST}")
 
 include(CPack)
